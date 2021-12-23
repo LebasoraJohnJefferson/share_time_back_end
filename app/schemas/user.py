@@ -7,7 +7,6 @@ class User(BaseModel):
     password:str
 
 class User_Created(BaseModel):
-    id:int
     email:EmailStr
     created_at:datetime
     class Config:

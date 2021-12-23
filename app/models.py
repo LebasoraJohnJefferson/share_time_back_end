@@ -10,4 +10,13 @@ class User(Base):
     id = Column(Integer,nullable=False,primary_key=True)
     email = Column(String,nullable=False,unique=True)
     password = Column(String,nullable=False)
+    profile = Column(String,nullable=True)
     created_at  = Column(TIMESTAMP(timezone=True),nullable=False,server_default=text('NOW()'))
+
+class Store(Base):
+    __tablename__ = "store"
+    id=Column(Integer,nullable=False,primary_key=True)
+    user_id = Column(Integer,ForeignKey("users.id",ondelete='CASCADE'))
+    store_name = Column(String,nullable=False)
+    store_profile = Column(String,nullable=True)
+    created_at = Column(TIMESTAMP(timezone=True),server_default=text('now()'),nullable=False)
