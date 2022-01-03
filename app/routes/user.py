@@ -10,10 +10,10 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(tags=['users'],prefix='/users')
 
-@router.get("/",response_model=List[user.User_Created])
-def get_user(db:Session = Depends(get_db)):
-    users = db.query(models.User).all()
-    return users
+@router.get("/",response_model=user.User_Created)
+def get_user(db:Session = Depends(get_db),user_id:int = Depends(oauth2.get_current_user)):
+    user = db.query(models.User).filter(models.User.id == user_id.id).first()
+    return user
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
 def register_user(payload:user.User,db:Session = Depends(get_db)):
@@ -46,7 +46,13 @@ def update_user(payload:user.User,db:Session = Depends(get_db),user_id:int= Depe
     db.commit()
     return Response(status_code=status.HTTP_200_OK)
     
-
-
+@router.put("/profile")
+def change_profile_picture(payload:user.User_profile,db:Session = Depends(get_db),user_id:int = Depends(oauth2.get_current_user)):
+    owner = db.query(models.User).filter(models.User.id == user_id.id)
+    if owner.first() == None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    owner.update(payload.dict(),synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_200_OK)
 
 

@@ -8,7 +8,13 @@ class User(BaseModel):
 
 class User_Created(BaseModel):
     email:EmailStr
+    profile:Optional[str]
     created_at:datetime
+    class Config:
+        orm_mode = True
+
+class User_profile(BaseModel):
+    profile:str
     class Config:
         orm_mode = True
 
